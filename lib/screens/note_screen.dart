@@ -1,31 +1,31 @@
-//! This is file is meant for the second screen, i.e., NoteScreen.
-//! Parts of the code have been given. Complete the remaining.
-//? You can refactor the code if needed
-
 import 'package:flutter/material.dart';
-
-// import '../models/note.dart';
+import '../models/note.dart';
 
 class NoteScreen extends StatelessWidget {
+  Note currentNote;
+  String chosen;
+  NoteScreen({this.currentNote, this.chosen});
+  NoteScreen.copy(this.currentNote, this.chosen, {String chose});
+
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         leading: Container(),
         centerTitle: true,
-        title: Text('Note Screen App Bar Title'),
+        title: Text(chosen.toString()),
         actions: [
           IconButton(
               icon: Icon(
                 Icons.check_circle,
                 size: 30,
               ),
-              onPressed: () {}),
+              onPressed: () => Navigator.pop(context),),
           IconButton(
               icon: Icon(
                 Icons.cancel_sharp,
                 size: 30,
               ),
-              onPressed: () {}),
+              onPressed: () => Navigator.pop(context), ),
         ],
       ),
       body: Container(
@@ -33,8 +33,8 @@ class NoteScreen extends StatelessWidget {
         child: Column(
           children: [
             TextFormField(
-              initialValue: null,
-              enabled: true,
+              initialValue: currentNote.title,
+              enabled: false,
               decoration: InputDecoration(
                 hintText: 'Type the title here',
               ),
