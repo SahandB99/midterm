@@ -1,18 +1,20 @@
-//! This is file is meant for the first screen, i.e., ListScreen.
-//! Parts of the code have been given. Complete the remaining.
-//? You can refactor the code if needed
-
 import 'package:flutter/material.dart';
-
-// import 'note_screen.dart';
-// import '../models/note.dart';
+import 'package:midterm/models/mock_data.dart';
+import 'note_screen.dart';
+import '../models/note.dart';
 
 class ListScreen extends StatefulWidget {
+  final List<Note> Notes;
+  ListScreen(this.Notes);
+
   @override
   _ListScreenState createState() => _ListScreenState();
 }
 
 class _ListScreenState extends State<ListScreen> {
+  var descCheck = true;
+  List<bool> buttonsCheck = [false, false, false];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,7 +24,7 @@ class _ListScreenState extends State<ListScreen> {
           CircleAvatar(
             backgroundColor: Colors.blue.shade200,
             child: Text(
-              '4',
+              widget.Notes.length.toString(),
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22.0),
             ),
           ),
@@ -32,7 +34,7 @@ class _ListScreenState extends State<ListScreen> {
         ],
       ),
       body: ListView.separated(
-        itemCount: 4,
+        itemCount: widget.Notes.length,
         separatorBuilder: (context, index) => Divider(
           color: Colors.blueGrey,
         ),
@@ -41,38 +43,65 @@ class _ListScreenState extends State<ListScreen> {
             width: 110.0,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                IconButton(
-                  icon: Icon(Icons.edit, color: Colors.blue),
-                  onPressed: () {},
-                ),
-                IconButton(
-                  icon: Icon(
-                    Icons.delete,
-                    color: Colors.blue,
-                  ),
-                  onPressed: () {},
-                ),
-              ],
+              children: buttonsCheck[index]
+                  ? [
+                      IconButton(
+                        icon: Icon(Icons.edit, color: Colors.blue),
+                        onPressed: () {},
+                      ),
+                      IconButton(
+                        icon: Icon(
+                          Icons.delete,
+                          color: Colors.blue,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            widget.Notes.removeAt(index);
+                            buttonsCheck.removeAt(index);
+                          });
+                        },
+                      ),
+                    ]
+                  : [],
             ),
           ),
-          title: Text('Note title'),
-          subtitle: Text('Note content'),
-          onTap: () {},
-          onLongPress: () {},
+          title: Text(widget.Notes[index].title),
+          subtitle: descCheck ? Text(widget.Notes[index].description) : null,
+          onTap: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return NoteScreen(
+                  currentNote: widget.Notes.elementAt(index), chosen: "view");
+            }));
+          },
+          onLongPress: () {
+            setState(() {
+              buttonsCheck[index] = !buttonsCheck[index];
+            });
+          },
         ),
       ),
       floatingActionButton: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           FloatingActionButton(
-              child: Icon(Icons.unfold_less),
+              child: descCheck
+                  ? Icon(Icons.unfold_less)
+                  : Icon(Icons.format_align_justify),
               tooltip: 'Show less. Hide notes content',
-              onPressed: () {}),
+              onPressed: () {
+                setState(() {
+                  descCheck = !descCheck;
+                });
+              }),
           FloatingActionButton(
             child: Icon(Icons.add),
             tooltip: 'Add a new note',
-            onPressed: () {},
+            onPressed: () {
+              setState(() {
+                widget.Notes.add(Note("new Note", "new note content"));
+                buttonsCheck.add(false);
+              });
+            },
           ),
         ],
       ),
