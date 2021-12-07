@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:midterm/models/mock_data.dart';
 import 'screens/list_screen.dart';
 
 void main() {
@@ -9,6 +9,6 @@ void main() {
     theme: ThemeData(
       primarySwatch: Colors.blue,
     ),
-    home: ListScreen(),
+    home: ListScreen(noteList),
   ));
 }
